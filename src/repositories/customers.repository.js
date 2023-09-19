@@ -15,9 +15,16 @@ export function getCustomerByCpfDB(cpf) {
 }
 
 export function getCustomerByIdDB(userId) {
-  return db.query(`SELECT * FROM customers WHERE id = $1;`, [userId]);
+  return db.query(
+    `SELECT id, name, phone, cpf, TO_CHAR(birthday, 'YYYY-MM-DD') AS birthday 
+      FROM customers WHERE id = $1;`,
+    [userId]
+  );
 }
 
 export function getCustomersDB() {
-  return db.query(`SELECT * FROM customers;`);
+  return db.query(
+    `SELECT id, name, phone, cpf, TO_CHAR(birthday, 'YYYY-MM-DD') 
+      AS birthday FROM customers;`
+  );
 }
