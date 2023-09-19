@@ -1,5 +1,5 @@
 import { Router } from "express";
-import validateSchema from "../middlewares/validateSchema.js";
+import { validateSchema } from "../middlewares/validateSchema.js";
 import { gamesSchema } from "../schemas/games.schema.js";
 import { postGame, getGames } from "../controllers/games.controller.js";
 
