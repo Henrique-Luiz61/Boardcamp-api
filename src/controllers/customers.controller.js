@@ -3,6 +3,8 @@ import {
   getCustomerByCpfDB,
   getCustomerByIdDB,
   getCustomersDB,
+  verificCpfConflictDB,
+  putCustomerInfoDB,
 } from "../repositories/customers.repository.js";
 
 export async function postCustomer(req, res) {
@@ -45,6 +47,26 @@ export async function getCustomerById(req, res) {
       return res.status(404).send({ message: "Customer not found!" });
 
     res.send(customer.rows[0]);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function putCustomerById(req, res) {
+  const { id } = req.params;
+  const { name, phone, cpf, birthday } = req.body;
+
+  try {
+    const conflict = await verificCpfConflictDB(id, cpf);
+
+    if (conflict.rowCount > 0)
+      return res
+        .status(409)
+        .send({ message: "CPF belonging to another user!" });
+
+    await putCustomerInfoDB(id, name, phone, cpf, birthday);
+
+    res.sendStatus(200);
   } catch (err) {
     res.status(500).send(err.message);
   }
