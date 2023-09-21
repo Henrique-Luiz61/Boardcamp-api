@@ -23,3 +23,11 @@ export function getAvailableRentalsDB(gameId) {
     [gameId]
   );
 }
+
+export function getRentalByIdDB(rentalId) {
+  return db.query(`SELECT * FROM rentals WHERE id = $1;`, [rentalId]);
+}
+
+export function deleteRentalDB(rentalId) {
+  return db.query(`DELETE FROM rentals WHERE id = $1;`, [rentalId]);
+}
