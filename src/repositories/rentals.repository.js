@@ -17,6 +17,15 @@ export function createRentalDB(customerId, gameId, daysRented, gameCheck) {
   );
 }
 
+export function getAllRentalsDB() {
+  return db.query(`
+    SELECT rentals.*, json_build_object('id', customers.id, 'name', customers.name) AS customer,
+                      json_build_object('id', games.id, 'name', games.name) AS game
+      FROM customers
+      JOIN rentals ON customers.id = rentals."customerId"
+      JOIN games ON games.id = rentals."gameId";`);
+}
+
 export function getAvailableRentalsDB(gameId) {
   return db.query(
     `SELECT * FROM rentals WHERE "gameId" = $1 AND "returnDate" IS NULL;`,

@@ -1,6 +1,7 @@
 import { getCustomerByIdDB } from "../repositories/customers.repository.js";
 import { getGameByIdDB } from "../repositories/games.repository.js";
 import {
+  getAllRentalsDB,
   getAvailableRentalsDB,
   createRentalDB,
   getRentalByIdDB,
@@ -33,6 +34,19 @@ export async function postRentals(req, res) {
   } catch (err) {
     res.status(500).send(err.message);
     console.log(err);
+  }
+}
+
+export async function getRentals(req, res) {
+  try {
+    const rentals = await getAllRentalsDB();
+
+    if (rentals.rowCount === 0)
+      return res.status(404).send({ message: "No rentals yet!" });
+
+    res.send(rentals.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 }
 
