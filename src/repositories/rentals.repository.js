@@ -28,6 +28,15 @@ export function getRentalByIdDB(rentalId) {
   return db.query(`SELECT * FROM rentals WHERE id = $1;`, [rentalId]);
 }
 
+export function finishRentalDB(returnDate, delayFee, id) {
+  return db.query(
+    `
+      UPDATE rentals SET "returnDate" = $1, "delayFee" = $2
+        WHERE id = $3;`,
+    [returnDate, delayFee, id]
+  );
+}
+
 export function deleteRentalDB(rentalId) {
   return db.query(`DELETE FROM rentals WHERE id = $1;`, [rentalId]);
 }

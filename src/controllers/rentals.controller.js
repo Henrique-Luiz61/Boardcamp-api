@@ -4,8 +4,10 @@ import {
   getAvailableRentalsDB,
   createRentalDB,
   getRentalByIdDB,
+  finishRentalDB,
   deleteRentalDB,
 } from "../repositories/rentals.repository.js";
+import dayjs from "dayjs";
 
 export async function postRentals(req, res) {
   const { customerId, gameId, daysRented } = req.body;
@@ -31,6 +33,39 @@ export async function postRentals(req, res) {
   } catch (err) {
     res.status(500).send(err.message);
     console.log(err);
+  }
+}
+
+export async function finishRentals(req, res) {
+  const { id } = req.params;
+  const delayfee = null;
+
+  try {
+    const rentalCheck = await getRentalByIdDB(id);
+
+    if (rentalCheck.rowCount === 0)
+      return res.status(404).send({ message: "Rental not found!" });
+
+    if (rentalCheck.rows[0].returnDate !== null)
+      return res.status(400).send({ message: "Rental already finished!" });
+
+    const dateStart = dayjs(rentalCheck.rows[0].rentDate);
+    const dateFinal = dayjs().format("YYYY-MM-DD");
+
+    const diffDays = dateFinal.diff(dateStart, "day");
+
+    const daysRented = rentalCheck.rows[0].daysRented;
+    const pricePerDay = rentalCheck.rows[0].originalPrice / daysRented;
+
+    if (diffDays > daysRented) {
+      delayfee = (diffDays - daysRented) * pricePerDay;
+    }
+
+    await finishRentalDB(dateFinal, delayfee, id);
+
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 }
 
