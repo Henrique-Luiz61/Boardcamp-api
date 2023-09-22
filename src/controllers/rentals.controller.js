@@ -38,7 +38,7 @@ export async function postRentals(req, res) {
 
 export async function finishRentals(req, res) {
   const { id } = req.params;
-  const delayfee = null;
+  let delayfee = null;
 
   try {
     const rentalCheck = await getRentalByIdDB(id);
@@ -52,7 +52,7 @@ export async function finishRentals(req, res) {
     const dateStart = dayjs(rentalCheck.rows[0].rentDate);
     const dateFinal = dayjs().format("YYYY-MM-DD");
 
-    const diffDays = dateFinal.diff(dateStart, "day");
+    const diffDays = dayjs(dateFinal).diff(dateStart, "day");
 
     const daysRented = rentalCheck.rows[0].daysRented;
     const pricePerDay = rentalCheck.rows[0].originalPrice / daysRented;
