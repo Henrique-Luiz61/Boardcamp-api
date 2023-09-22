@@ -19,8 +19,8 @@ export function createRentalDB(customerId, gameId, daysRented, gameCheck) {
 
 export function getAllRentalsDB() {
   return db.query(`
-    SELECT rentals.*, json_build_object('id', customers.id, 'name', customers.name) AS customer,
-                      json_build_object('id', games.id, 'name', games.name) AS game
+    SELECT rentals.*, JSON_BUILD_OBJECT('id', customers.id, 'name', customers.name) AS customer,
+                      JSON_BUILD_OBJECT('id', games.id, 'name', games.name) AS game
       FROM customers
       JOIN rentals ON customers.id = rentals."customerId"
       JOIN games ON games.id = rentals."gameId";`);
